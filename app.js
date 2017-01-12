@@ -12,6 +12,9 @@ var state = {
   ]
 };
 
+
+
+
 // State modification functions
 var addItem = function(state, item) {
   if (_.findWhere(state.items, {name: item}) == undefined) {
@@ -22,7 +25,6 @@ var addItem = function(state, item) {
 };
 
 var checkItem = function(state, item) {
-  console.log($(item).children(".shopping-item"));
   var checkedName = $(item).children(".shopping-item").html();
   var checkedObject = _.findWhere(state.items, {name: checkedName})
   if (checkedObject.checked === false){
@@ -36,17 +38,15 @@ var checkItem = function(state, item) {
 };
 
 var deleteItem = function(state, item) {
-  var itemName = $(item).children(".shopping-item").html();
-  var index = state.items.indexOf(itemName);
-  var checkIndex = state.checkedItems.indexOf(itemName);
-  if (itemName in state.checkedItems) {
-    state.items.splice(index, 1);
-    state.checkedItems.splice(checkIndex, 1);
-  } else {
-    state.items.splice(index, 1);
-  }
+  var deleteName = $(item).children(".shopping-item").html();
+  var deleteObject = _.findWhere(state.items, {name: deleteName})
+  // object of checked item
+  var index = state.items.indexOf(deleteObject);
+  state.items.splice(index, 1)
   $(item).remove();
 };
+
+
 
 // Render functions
 var renderList = function(state, element) {
@@ -69,6 +69,9 @@ var renderList = function(state, element) {
     });
     element.html(itemsHTML);
 };
+
+
+
 
 // Event listeners
 $('#js-shopping-list-form').submit(function(event) {
