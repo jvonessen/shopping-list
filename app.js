@@ -2,12 +2,8 @@
 var state = {
   items: [
     {
-      // whether item is checked or not
       checked: false,
-
-      // what the item is
       name: "apples"
-
     },
     {
       checked: false,
@@ -18,21 +14,25 @@ var state = {
 
 // State modification functions
 var addItem = function(state, item) {
-  state.items.push(item);
+  if (_.findWhere(state.items, {name: item}) == undefined) {
+    state.items.push({checked: false, name: item})
+  } else {
+    alert("Item already listed.")
+  }
 };
 
 var checkItem = function(state, item) {
+  console.log($(item).children(".shopping-item"));
   var checkedName = $(item).children(".shopping-item").html();
-  if (checkedName in state.checkedItems) {
-    var checkIndex = state.checkedItems.indexOf(checkedName);
-    console.log("index " + checkIndex);
-    state.checkedItems.splice(checkIndex, 1);
-    console.log("checkedItems " + state.checkedItems);
+  var checkedObject = _.findWhere(state.items, {name: checkedName})
+  if (checkedObject.checked === false){
+    checkedObject.checked = true
+    $(item).children(".shopping-item").addClass("shopping-item__checked");
   } else {
-    state.checkedItems.push(checkedName);
-    console.log("checkedItems " + state.checkedItems)
+    checkedObject.checked = false
+    $(item).children(".shopping-item").removeClass("shopping-item__checked");
   };
-  console.log("items " + state.items);
+
 };
 
 var deleteItem = function(state, item) {
@@ -46,12 +46,15 @@ var deleteItem = function(state, item) {
     state.items.splice(index, 1);
   }
   $(item).remove();
-  console.log(state);
 };
 
 // Render functions
 var renderList = function(state, element) {
-  var itemsHTML = state.items.map(function(item) {
+  var itemList = [];
+  for (i=0; i<state.items.length; i++) {
+    itemList.push(state.items[i].name)
+  };
+  var itemsHTML = itemList.map(function(item) {
     return  '<li><span class="shopping-item">' +
       item +
       '</span> \
